@@ -1,0 +1,10 @@
+**/target/
+**/.idea/
+**/.git/
+**/node_modules/
+**/.next/
+**/build/
+**/dist/
+**/*.log
+**/.env
+**/.env.local

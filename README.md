@@ -18,7 +18,7 @@ Conversor de moedas com taxas de câmbio em tempo real, com frontend React/Next.
 - Cache de taxas por 30 minutos
 - Validação de entrada em tempo real
 - Histórico de conversões
-- Deploy automático na Vercel
+- Deploy com Docker
 
 ## Moedas Disponíveis
 
@@ -44,6 +44,7 @@ conversor-de-moedas/
 │   │   ├── app/           # App Router
 │   │   ├── components/    # Componentes React
 │   │   └── lib/           # Utilitários
+│   ├── Dockerfile
 │   └── package.json
 │
 ├── backend/                # Backend Java/Spring Boot
@@ -52,8 +53,10 @@ conversor-de-moedas/
 │   │   ├── service/       # Lógica de negócio
 │   │   ├── model/         # Modelos de dados
 │   │   └── config/        # Configurações
+│   ├── Dockerfile
 │   └── pom.xml
 │
+├── docker-compose.yml
 └── README.md
 ```
 
@@ -62,28 +65,34 @@ conversor-de-moedas/
 - [Node.js 18+](https://nodejs.org/)
 - [Java 17+](https://adoptium.net/)
 - [Maven 3.8+](https://maven.apache.org/)
+- [Docker](https://www.docker.com/) (opcional)
 - [API Key da ExchangeRate-API](https://www.exchangerate-api.com/)
 
-## Instalação
+## Instalação Local
 
-### Backend (Spring Boot)
+### 1. Obtenha a API Key
+
+1. Acesse [ExchangeRate-API](https://www.exchangerate-api.com/)
+2. Crie uma conta gratuita
+3. Copie sua API key
+
+### 2. Backend (Spring Boot)
 
 ```bash
 cd backend
 
-# Configure a API key
-cp .env.example .env
-# Edite .env com sua chave
+# Configure a API key (Linux/Mac)
+export EXCHANGE_RATE_API_KEY=sua_chave_aqui
+
+# Ou no Windows (PowerShell)
+$env:EXCHANGE_RATE_API_KEY="sua_chave_aqui"
 
 # Execute
 ./mvnw spring-boot:run
-# ou
-mvn spring-boot:run
-
 # A API estará em: http://localhost:8080
 ```
 
-### Frontend (Next.js)
+### 3. Frontend (Next.js)
 
 ```bash
 cd frontend
@@ -91,15 +100,75 @@ cd frontend
 # Instale as dependências
 npm install
 
-# Configure a URL da API
-cp .env.example .env.local
-# Edite .env.local (padrão: http://localhost:8080)
-
 # Execute
 npm run dev
-
 # O frontend estará em: http://localhost:3000
 ```
+
+## Deploy com Docker
+
+### Local
+
+```bash
+# Clone e configure
+git clone https://github.com/marcuslaf/conversor-de-moedas.git
+cd conversor-de-moedas
+
+# Configure a API key
+export EXCHANGE_RATE_API_KEY=sua_chave_aqui
+
+# Execute com Docker Compose
+docker-compose up --build
+```
+
+Acesse:
+- Frontend: http://localhost:3000
+- Backend: http://localhost:8080
+- Swagger: http://localhost:8080/swagger-ui.html
+
+## Deploy em Produção
+
+### Opção 1: Vercel (Frontend) + Railway (Frontend)
+
+**Frontend na Vercel:**
+1. Faça push para o GitHub
+2. Acesse [vercel.com](https://vercel.com)
+3. Importe o repositório
+4. Configure:
+   - Root Directory: `frontend`
+   - Build Command: `npm run build`
+   - Output Directory: `.next`
+5. Adicione variável de ambiente:
+   - `NEXT_PUBLIC_API_URL` = URL do backend Railway
+
+**Backend no Railway:**
+1. Acesse [railway.app](https://railway.app)
+2. Crie um novo projeto
+3. Adicione o repositório
+4. Configure:
+   - Root Directory: `backend`
+   - Build Command: `mvn clean package -DskipTests`
+   - Start Command: `java -jar target/*.jar`
+5. Adicione variável de ambiente:
+   - `EXCHANGE_RATE_API_KEY` = sua chave
+   - `SPRING_PROFILES_ACTIVE` = `prod`
+
+### Opção 2: Render
+
+**Backend:**
+1. Acesse [render.com](https://render.com)
+2. Crie um "Web Service"
+3. Configure:
+   - Build Command: `cd backend && mvn clean package -DskipTests`
+   - Start Command: `cd backend && java -jar target/*.jar`
+4. Adicione variável de ambiente:
+   - `EXCHANGE_RATE_API_KEY` = sua chave
+
+**Frontend:**
+1. Crie um "Static Site"
+2. Configure:
+   - Build Command: `cd frontend && npm install && npm run build`
+   - Publish Directory: `frontend/.next/static`
 
 ## API Endpoints
 
@@ -130,25 +199,6 @@ curl -X POST http://localhost:8080/api/convert \
   "result": 492.34,
   "timestamp": "2024-01-15T10:30:00"
 }
-```
-
-## Deploy
-
-### Backend (Vercel/Railway/Render)
-
-```bash
-cd backend
-mvn clean package
-# Deploy o JAR gerado em backend/target/
-```
-
-### Frontend (Vercel)
-
-```bash
-cd frontend
-npm i -g vercel
-vercel login
-vercel
 ```
 
 ## Tecnologias

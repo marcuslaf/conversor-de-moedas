@@ -47,8 +47,7 @@ public class ExchangeRateService {
         }
 
         String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .pathSegment("latest", from.name())
-                .queryParam("apiKey", apiKey)
+                .pathSegment(apiKey, "latest", from.name())
                 .toUriString();
 
         log.info("Buscando taxa de câmbio: {} -> {}", from, to);

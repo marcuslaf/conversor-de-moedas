@@ -10,7 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Currency", description = "API de conversão de moedas")
 public class CurrencyController {
+
+    private static final Logger log = LoggerFactory.getLogger(CurrencyController.class);
 
     private final ExchangeRateService exchangeRateService;
 

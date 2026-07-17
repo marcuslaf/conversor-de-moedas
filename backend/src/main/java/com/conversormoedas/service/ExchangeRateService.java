@@ -2,7 +2,8 @@ package com.conversormoedas.service;
 
 import com.conversormoedas.model.ConversionResponse;
 import com.conversormoedas.model.Currency;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class ExchangeRateService {
+
+    private static final Logger log = LoggerFactory.getLogger(ExchangeRateService.class);
 
     private final RestTemplate restTemplate;
     private final String apiKey;

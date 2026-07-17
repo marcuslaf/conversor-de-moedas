@@ -1,16 +1,7 @@
 package com.conversormoedas.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ErrorResponse {
 
     private int status;
@@ -18,12 +9,49 @@ public class ErrorResponse {
     private String message;
     private LocalDateTime timestamp;
 
+    public ErrorResponse() {
+    }
+
+    public ErrorResponse(int status, String error, String message, LocalDateTime timestamp) {
+        this.status = status;
+        this.error = error;
+        this.message = message;
+        this.timestamp = timestamp;
+    }
+
     public static ErrorResponse create(int status, String error, String message) {
-        return ErrorResponse.builder()
-                .status(status)
-                .error(error)
-                .message(message)
-                .timestamp(LocalDateTime.now())
-                .build();
+        return new ErrorResponse(status, error, message, LocalDateTime.now());
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }
